@@ -1,0 +1,49 @@
+# Directorios de compilación
+/build/
+/dist/
+
+# Archivos generados por el IDE (por ejemplo, NetBeans)
+nbproject/private/
+nbproject/Makefile-*
+nbproject/configs/
+*.orig
+*.bak
+
+# Configuración específica de la IDE
+*.iml
+.idea/
+.vscode/
+
+# Archivos de log
+*.log
+
+# Dependencias locales (Maven o Gradle)
+/target/
+/build/
+/out/
+
+# Archivos de configuración de servidores locales
+.DS_Store
+*.class
+*.war
+*.ear
+
+# Archivos de configuraciones personales
+/private/
+/temp/
+/tmp/
+
+# Archivos relacionados con el control de versiones de terceros
+*.swp
+*~
+.project
+.settings/
+.metadata/
+.recommenders/
+
+# Archivos temporales del sistema
+Thumbs.db
+.DS_Store
+*.swp
+*~
+
