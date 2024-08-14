@@ -5,7 +5,9 @@
  */
 package controller;
 
-import models.Usuario;
+import entities.Usuario;
+import facades.ciudadFacades;
+import models.Usuarios;
 import facades.usuarioFacades;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -29,6 +31,9 @@ public class usuarioController {
 
     @EJB
     private usuarioFacades usfacades;
+    
+    @EJB
+    private ciudadFacades ciufacades;
     
     
     public static String hashPassword(String password, byte[] salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
@@ -76,8 +81,15 @@ public class usuarioController {
             String uuidUsuarioString = uuidUsuario.toString(); // Convertir UUID a String
 
             int idCiudad = jsonObject.getInt("id_ciudad", 0);
-            String cedulaUsuario = jsonObject.getString("cedula_usuario", "N/A");
+            Boolean existeCiudad = ciufacades.verifCiudadById(idCiudad);
+            if (!existeCiudad) { // Corregido aquí
+                JsonObject jsonResponse = Json.createObjectBuilder()
+                    .add("error", "La ciudad ingresada no existe!")
+                    .build();
+                return Response.status(Response.Status.CONFLICT).entity(jsonResponse).build();
+            }
             
+            String cedulaUsuario = jsonObject.getString("cedula_usuario", "N/A");
             Boolean existeUsuario = usfacades.verifExistUsuario(cedulaUsuario);
             if (existeUsuario) {
                 JsonObject jsonResponse = Json.createObjectBuilder()
@@ -96,13 +108,13 @@ public class usuarioController {
             System.out.println("Cédula: " + cedulaUsuario);
 
             // Crear el objeto Usuario y setear los valores
-            Usuario usuario = new Usuario();
+            Usuarios usuario = new Usuarios();
             usuario.setNombre_usuario(nombreUsuario);
             usuario.setApellido_usuario(apellidoUsuario);
             usuario.setEmail_usuario(emailUsuario);
             usuario.setClave_usuario(claveUsuario);
             usuario.setTelefono_usuario(telefonoUsuario);
-            usuario.setUuid_usuario(uuidUsuarioString); // Asignar el UUID convertido a String
+            //usuario.setUuid_usuario(uuidUsuarioString); // Asignar el UUID convertido a String
             usuario.setId_ciudad(idCiudad);
             usuario.setCedula_usuario(cedulaUsuario);
 
@@ -128,11 +140,63 @@ public class usuarioController {
     }
     
     
-    /*@POST
+    @POST
     @Path("login")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response LoginUsuario(JsonObject jsonObject) {
-        return
-    }*/
+    public Response loginUsuario(JsonObject jsonObject) {
+        try {
+            // Extraer los valores del JsonObject
+            String emailUsuario = jsonObject.getString("email_usuario", "N/A");
+            String claveUsuario = jsonObject.getString("clave_usuario", "N/A");
+
+            // Buscar el usuario en la base de datos por su email
+            Usuario usuarioEntity = usfacades.buscarUsuarioPorEmail(emailUsuario);
+
+            if (usuarioEntity == null) {
+                // Si no existe el usuario, retornar un mensaje de error
+                JsonObject jsonResponse = Json.createObjectBuilder()
+                    .add("error", "Credenciales inválidas.")
+                    .build();
+                return Response.status(Response.Status.UNAUTHORIZED).entity(jsonResponse).build();
+            }
+
+            // Convertir el Usuario entity a Usuarios model
+            Usuarios usuario = new Usuarios(
+                usuarioEntity.getNombreUsuario(),
+                usuarioEntity.getApellidoUsuario(),
+                usuarioEntity.getEmailUsuario(),
+                usuarioEntity.getTelefonoUsuario(),
+                usuarioEntity.getClaveUsuario(),
+                usuarioEntity.getIdCiudad(),
+                usuarioEntity.getCedulaUsuario()
+            );
+
+            // Generar el hash de la contraseña ingresada utilizando el salt almacenado
+            byte[] salt = generateSaltFromPhrase("miFraseSecretaParaElSalt");
+            String hashedPassword = hashPassword(claveUsuario, salt);
+
+            // Comparar el hash de la contraseña ingresada con el hash almacenado
+            if (!hashedPassword.equals(usuario.getClave_usuario())) {
+                // Si las contraseñas no coinciden, retornar un mensaje de error
+                JsonObject jsonResponse = Json.createObjectBuilder()
+                    .add("error", "Credenciales inválidas.")
+                    .build();
+                return Response.status(Response.Status.UNAUTHORIZED).entity(jsonResponse).build();
+            }
+
+            // Si las credenciales son válidas, retornar un mensaje de éxito
+            JsonObject jsonResponse = Json.createObjectBuilder()
+                .add("message", "Login exitoso!")
+                .build();
+            return Response.ok(jsonResponse).build();
+
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                .entity("Error al procesar la solicitud: " + e.getMessage())
+                .build();
+        }
+    }
+
+
 }

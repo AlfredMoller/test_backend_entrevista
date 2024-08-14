@@ -1,8 +1,10 @@
 package facades;
 
-import models.Usuario;
+import models.Usuarios;
+import entities.Usuario;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import org.slf4j.Logger;
@@ -21,7 +23,8 @@ public class usuarioFacades {
     @PersistenceContext(unitName = "pago_serviciosPU")
     private EntityManager em;
 
-    public void registrarUsuario(Usuario usuario) {
+    
+    public void registrarUsuario(Usuarios usuario) {
         String claveUsuario = usuario.getClave_usuario();
         
         // Imprimir el nombre recibido usando Logger y System.out
@@ -61,6 +64,7 @@ public class usuarioFacades {
         }
     }
     
+    
      public boolean verifExistUsuario(String cedulaUsuario) {
         System.out.println("Cedula Recibido: " + cedulaUsuario);
         try {
@@ -77,6 +81,25 @@ public class usuarioFacades {
         } catch (Exception ex) {
             LOGGER.error("No se pudo verificar la existencia del usuario. {}", ex.getMessage());
             throw new RuntimeException("No se pudo verificar la existencia del usuario.", ex);
+        }
+    }
+     
+     
+    public Usuario buscarUsuarioPorEmail(String emailUsuario) {
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append("SELECT u FROM Usuario u ");
+            sb.append("WHERE u.emailUsuario = ?1");
+
+            return em.createQuery(sb.toString(), Usuario.class)
+                     .setParameter(1, emailUsuario)
+                     .getSingleResult();
+        } catch (NoResultException e) {
+            LOGGER.warn("No se encontró usuario con el email: {}", emailUsuario);
+            return null;
+        } catch (Exception ex) {
+            LOGGER.error("Error al buscar el usuario por email: {}", ex.getMessage());
+            throw new RuntimeException("Error al buscar el usuario por email.", ex);
         }
     }
 }

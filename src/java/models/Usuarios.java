@@ -9,26 +9,24 @@ package models;
  *
  * @author pc
  */
-public class Usuario {
+public class Usuarios {
     private String nombre_usuario;
     private String apellido_usuario;
     private String email_usuario;
     private String telefono_usuario;
     private String clave_usuario;
-    private String uuid_usuario;
     private int id_ciudad;
     private String cedula_usuario;
     
-    public Usuario() {
+    public Usuarios() {
     }
 
-    public Usuario(String nombre_usuario, String apellido_usuario, String email_usuario, String telefono_usuario, String clave_usuario, String uuid_usuario, int id_ciudad, String cedula_usuario) {
+    public Usuarios(String nombre_usuario, String apellido_usuario, String email_usuario, String telefono_usuario, String clave_usuario, int id_ciudad, String cedula_usuario) {
         this.nombre_usuario = nombre_usuario;
         this.apellido_usuario = apellido_usuario;
         this.email_usuario = email_usuario;
         this.telefono_usuario = telefono_usuario;
         this.clave_usuario = clave_usuario;
-        this.uuid_usuario = uuid_usuario;
         this.id_ciudad = id_ciudad;
         this.cedula_usuario = cedula_usuario;
     }
@@ -73,14 +71,6 @@ public class Usuario {
         this.clave_usuario = clave_usuario;
     }
 
-    public String getUuid_usuario() {
-        return uuid_usuario;
-    }
-
-    public void setUuid_usuario(String uuid_usuario) {
-        this.uuid_usuario = uuid_usuario;
-    }
-
     public int getId_ciudad() {
         return id_ciudad;
     }
@@ -96,6 +86,7 @@ public class Usuario {
     public void setCedula_usuario(String cedula_usuario) {
         this.cedula_usuario = cedula_usuario;
     }
-    
+
+   
     
 }

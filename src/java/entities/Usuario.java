@@ -47,7 +47,6 @@ public class Usuario implements Serializable {
     @Column(name = "apellido_usuario")
     private String apellidoUsuario;
 
-    @Size(max = 200)
     @Column(name = "email_usuario")
     private String emailUsuario;
 

@@ -24,7 +24,7 @@ public class ciudadFacades {
     @PersistenceContext(unitName = "pago_serviciosPU")
     private EntityManager em;
 
-    public boolean verifCiudadById(String idCiudad) {
+    public boolean verifCiudadById(int idCiudad) {
         System.out.println("IdCiudad Recibido: " + idCiudad);
         try {
             StringBuilder sb = new StringBuilder();
