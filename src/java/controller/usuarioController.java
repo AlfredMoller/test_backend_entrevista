@@ -150,27 +150,16 @@ public class usuarioController {
             String emailUsuario = jsonObject.getString("email_usuario", "N/A");
             String claveUsuario = jsonObject.getString("clave_usuario", "N/A");
 
-            // Buscar el usuario en la base de datos por su email
-            Usuario usuarioEntity = usfacades.buscarUsuarioPorEmail(emailUsuario);
+            // Buscar el usuario en la base de datos por su email (solo obtiene email y clave)
+            Usuarios usuario = usfacades.buscarUsuarioPorEmail(emailUsuario);
 
-            if (usuarioEntity == null) {
+            if (usuario == null) {
                 // Si no existe el usuario, retornar un mensaje de error
                 JsonObject jsonResponse = Json.createObjectBuilder()
                     .add("error", "Credenciales inválidas.")
                     .build();
                 return Response.status(Response.Status.UNAUTHORIZED).entity(jsonResponse).build();
             }
-
-            // Convertir el Usuario entity a Usuarios model
-            Usuarios usuario = new Usuarios(
-                usuarioEntity.getNombreUsuario(),
-                usuarioEntity.getApellidoUsuario(),
-                usuarioEntity.getEmailUsuario(),
-                usuarioEntity.getTelefonoUsuario(),
-                usuarioEntity.getClaveUsuario(),
-                usuarioEntity.getIdCiudad(),
-                usuarioEntity.getCedulaUsuario()
-            );
 
             // Generar el hash de la contraseña ingresada utilizando el salt almacenado
             byte[] salt = generateSaltFromPhrase("miFraseSecretaParaElSalt");
@@ -197,6 +186,4 @@ public class usuarioController {
                 .build();
         }
     }
-
-
 }

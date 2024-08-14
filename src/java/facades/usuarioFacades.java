@@ -85,15 +85,21 @@ public class usuarioFacades {
     }
      
      
-    public Usuario buscarUsuarioPorEmail(String emailUsuario) {
+    public Usuarios buscarUsuarioPorEmail(String emailUsuario) {
         try {
-            StringBuilder sb = new StringBuilder();
-            sb.append("SELECT u FROM Usuario u ");
-            sb.append("WHERE u.emailUsuario = ?1");
+            String sql = "SELECT email_usuario, clave_usuario " +
+                         "FROM public.usuario WHERE email_usuario = ?1";
 
-            return em.createQuery(sb.toString(), Usuario.class)
-                     .setParameter(1, emailUsuario)
-                     .getSingleResult();
+            Query query = em.createNativeQuery(sql);
+            query.setParameter(1, emailUsuario);
+
+            Object[] result = (Object[]) query.getSingleResult();
+
+            Usuarios usuario = new Usuarios();
+            usuario.setEmail_usuario((String) result[0]);
+            usuario.setClave_usuario((String) result[1]);
+
+            return usuario;
         } catch (NoResultException e) {
             LOGGER.warn("No se encontró usuario con el email: {}", emailUsuario);
             return null;
