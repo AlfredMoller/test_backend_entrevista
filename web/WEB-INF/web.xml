@@ -28,7 +28,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>JAX-RS Servlet</servlet-name>
-        <url-pattern>/webresources/*</url-pattern>
+        <url-pattern>/v1/*</url-pattern>
     </servlet-mapping>
     
     <session-config>

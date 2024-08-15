@@ -18,8 +18,8 @@ import org.slf4j.LoggerFactory;
  */
 
 @Stateless
-public class ciudadFacades {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ciudadFacades.class);
+public class ciudadFacade {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ciudadFacade.class);
 
     @PersistenceContext(unitName = "pago_serviciosPU")
     private EntityManager em;

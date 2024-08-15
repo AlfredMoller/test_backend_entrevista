@@ -16,9 +16,9 @@ import org.slf4j.LoggerFactory;
  */
 
 @Stateless
-public class usuarioFacades {
+public class usuarioFacade {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(usuarioFacades.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(usuarioFacade.class);
 
     @PersistenceContext(unitName = "pago_serviciosPU")
     private EntityManager em;

@@ -5,10 +5,11 @@
  */
 package controller;
 
+import static com.sun.corba.se.spi.presentation.rmi.StubAdapter.request;
 import entities.Usuario;
-import facades.ciudadFacades;
+import facades.ciudadFacade;
 import models.Usuarios;
-import facades.usuarioFacades;
+import facades.usuarioFacade;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -25,15 +26,20 @@ import javax.ws.rs.core.Response;
 import java.util.UUID;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
+import javax.servlet.http.HttpSession;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.ws.rs.core.Context;
 
 @Path("usuario")
 public class usuarioController {
 
     @EJB
-    private usuarioFacades usfacades;
+    private usuarioFacade usfacades;
     
     @EJB
-    private ciudadFacades ciufacades;
+    private ciudadFacade ciufacades;
     
     
     public static String hashPassword(String password, byte[] salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
@@ -144,7 +150,7 @@ public class usuarioController {
     @Path("login")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response loginUsuario(JsonObject jsonObject) {
+    public Response loginUsuario(JsonObject jsonObject, @Context HttpServletRequest request) {
         try {
             // Extraer los valores del JsonObject
             String emailUsuario = jsonObject.getString("email_usuario", "N/A");
@@ -173,7 +179,10 @@ public class usuarioController {
                     .build();
                 return Response.status(Response.Status.UNAUTHORIZED).entity(jsonResponse).build();
             }
-
+            
+            // Si las credenciales son válidas, crear una sesión
+            HttpSession session = request.getSession(true); // Crear una nueva sesión si no existe
+            session.setAttribute("usuario", usuario); // Almacenar el usuario en la sesión
             // Si las credenciales son válidas, retornar un mensaje de éxito
             JsonObject jsonResponse = Json.createObjectBuilder()
                 .add("message", "Login exitoso!")
@@ -185,5 +194,19 @@ public class usuarioController {
                 .entity("Error al procesar la solicitud: " + e.getMessage())
                 .build();
         }
+    }
+    
+    
+    @POST
+    @Path("logout")
+    public Response logout(@Context HttpServletRequest request) {
+        HttpSession session = request.getSession(false); // Obtener la sesión si existe
+        if (session != null) {
+            session.invalidate(); // Invalidar la sesión
+        }
+         JsonObject jsonResponse = Json.createObjectBuilder()
+            .add("message", "Sesión cerrada exitosamente!")
+            .build();
+        return Response.ok().entity(jsonResponse).build();
     }
 }
