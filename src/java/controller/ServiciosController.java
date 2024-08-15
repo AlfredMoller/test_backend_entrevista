@@ -6,8 +6,11 @@
 package controller;
 
 import entities.DeudasServicios;
+import facades.cuentasfacade;
 import facades.deudasServiciosFacade;
 import facades.serviciosFacade;
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.json.Json;
@@ -35,9 +38,13 @@ public class ServiciosController {
 
     @EJB
     private deudasServiciosFacade deufacades;
+    
+    @EJB
+    private cuentasfacade cufacades;
 
+    
     @POST
-    @Path("deudaByServicio")
+    @Path("consultarDeudas")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response listarServiciosDeudas(JsonObject jsonObject) {
@@ -88,6 +95,63 @@ public class ServiciosController {
             }
 
             return Response.ok(responseBuilder.build()).build();
+
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                .entity("Error al procesar la solicitud: " + e.getMessage())
+                .build();
+        }
+    }
+    
+    
+    @POST
+    @Path("procesarPago")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response verificarSaldoParaPago(JsonObject jsonObject) {
+        try {
+            Integer idUsuario = jsonObject.getInt("id_usuario");
+            String nombreServicio = jsonObject.getString("nombre_servicio", "N/A");
+            String fechaDeudaStr = jsonObject.getString("fecha_deuda", null);
+
+            BigDecimal montoDeuda = new BigDecimal(jsonObject.getString("monto_deuda"));
+            
+            // Convertir la fecha de deuda de String a Date
+            Date fechaDeuda = null;
+            if (fechaDeudaStr != null && !fechaDeudaStr.isEmpty()) {
+                fechaDeuda = java.sql.Date.valueOf(fechaDeudaStr);
+            }
+
+            Integer idServicio = servfacades.obtenerServicioPorNombre(nombreServicio);
+            if (idServicio == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity(
+                    Json.createObjectBuilder().add("error", "El nombre del servicio proporcionado no existe.").build()
+                ).build();
+            }
+            
+            // Verificar si la deuda existe para el usuario, servicio y fecha especificados
+            DeudasServicios deuda = deufacades.buscarDeudaPorFechaYServicio(idUsuario, idServicio, fechaDeuda);
+            if (deuda == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity(
+                    Json.createObjectBuilder().add("error", "No se encontró una deuda para el servicio y la fecha especificados.").build()
+                ).build();
+            }
+
+            // Verificar si el usuario tiene saldo suficiente para pagar la deuda
+            boolean saldoSuficiente = cufacades.tieneSaldoSuficiente(idUsuario, montoDeuda);
+
+            JsonObject jsonResponse;
+            if (saldoSuficiente) {
+                jsonResponse = Json.createObjectBuilder()
+                    .add("message", "El usuario tiene suficiente saldo para pagar la deuda.")
+                    .build();
+            } else {
+                jsonResponse = Json.createObjectBuilder()
+                    .add("message", "El usuario no tiene suficiente saldo para pagar la deuda.")
+                    .build();
+            }
+
+            return Response.ok(jsonResponse).build();
 
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)

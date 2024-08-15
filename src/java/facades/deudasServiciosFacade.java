@@ -61,6 +61,7 @@ package facades;
 
 import entities.DeudasServicios;
 import entities.Servicios;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -131,7 +132,30 @@ public class deudasServiciosFacade {
             throw new RuntimeException("No se pudo contar las deudas.", ex);
         }
     }
+    
+     public DeudasServicios buscarDeudaPorFechaYServicio(Integer idUsuario, Integer idServicio, Date fechaDeuda) {
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append("SELECT du ");
+            sb.append("FROM DeudasServicios du ");
+            sb.append("WHERE du.idServicio.idServicio = :idServicio ");
+            sb.append("AND du.idUsuario.idUsuario = :idUsuario ");
+            sb.append("AND du.fechaVencimiento = :fechaDeuda");
 
+            Query query = em.createQuery(sb.toString(), DeudasServicios.class);
+            query.setParameter("idServicio", idServicio);
+            query.setParameter("idUsuario", idUsuario);
+            query.setParameter("fechaDeuda", fechaDeuda);
+
+            return (DeudasServicios) query.getSingleResult();
+        } catch (NoResultException e) {
+            LOGGER.warn("No se encontró deuda para el servicio, usuario y fecha especificados.");
+            return null;
+        } catch (Exception ex) {
+            LOGGER.error("Error al buscar la deuda: {}", ex.getMessage());
+            throw new RuntimeException("Error al buscar la deuda.", ex);
+        }
+    }
 
 }
 
