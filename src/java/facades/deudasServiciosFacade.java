@@ -78,37 +78,60 @@ public class deudasServiciosFacade {
     @PersistenceContext(unitName = "pago_serviciosPU")
     private EntityManager em;
     
-    public List<DeudasServicios> listarDeaudasByParams(Integer idUsuario, int idServicio, String nisOCedula, boolean logId) {
-    try {
-        StringBuilder sb = new StringBuilder();
-        sb.append("SELECT du FROM DeudasServicios du WHERE du.idServicio.idServicio = :idServicio ");
+    public List<DeudasServicios> listarDeaudasByParams(Integer idUsuario, int idServicio, String nisOCedula, boolean logId, int page, int size) {
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append("SELECT du FROM DeudasServicios du WHERE du.idServicio.idServicio = :idServicio ");
+            if (logId) {
+                sb.append("AND du.idUsuario.idUsuario = :idUsuario ");
+            } else if (nisOCedula != null && !nisOCedula.isEmpty()) {
+                sb.append("AND du.numeroReferenciaComprobante = :nisOCedula ");
+            }
 
-        // Si logId es true y idUsuario no es null, agrega esta condición a la consulta
-        if (logId && idUsuario != null) {
-            sb.append("AND du.idUsuario.idUsuario = :idUsuario ");
-        } 
-        // Si nisOCedula no es null o vacío, agrega esta condición a la consulta
-        else if (nisOCedula != null && !nisOCedula.isEmpty()) {
-            sb.append("AND du.numeroReferenciaComprobante = :nisOCedula ");
+            Query query = em.createQuery(sb.toString(), DeudasServicios.class)
+                            .setParameter("idServicio", idServicio)
+                            .setFirstResult((page - 1) * size)  // Paginación - primer resultado
+                            .setMaxResults(size);  // Paginación - tamaño de página
+
+            if (logId) {
+                query.setParameter("idUsuario", idUsuario);
+            } else if (nisOCedula != null && !nisOCedula.isEmpty()) {
+                query.setParameter("nisOCedula", nisOCedula);
+            }
+
+            return query.getResultList();
+        } catch (Exception ex) {
+            ex.printStackTrace(); 
+            throw new RuntimeException("No se pudo filtrar la deuda.", ex);
         }
-
-        Query query = em.createQuery(sb.toString(), DeudasServicios.class);
-        query.setParameter("idServicio", idServicio);
-
-        // Solo establece el parámetro idUsuario si no es null
-        if (logId && idUsuario != null) {
-            query.setParameter("idUsuario", idUsuario);
-        } else if (nisOCedula != null && !nisOCedula.isEmpty()) {
-            query.setParameter("nisOCedula", nisOCedula);
-        }
-
-        return query.getResultList();
-    } catch (Exception ex) {
-        ex.printStackTrace(); // Esto imprimirá el stack trace completo en el log
-        LOGGER.error("Error al filtrar la deuda: {}", ex.getMessage());
-        throw new RuntimeException("No se pudo filtrar la deuda.", ex);
     }
-}
+
+    public int contarDeudas(Integer idUsuario, int idServicio, String nisOCedula, boolean logId) {
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append("SELECT COUNT(du) FROM DeudasServicios du WHERE du.idServicio.idServicio = :idServicio ");
+            if (logId) {
+                sb.append("AND du.idUsuario.idUsuario = :idUsuario ");
+            } else if (nisOCedula != null && !nisOCedula.isEmpty()) {
+                sb.append("AND du.numeroReferenciaComprobante = :nisOCedula ");
+            }
+
+            Query query = em.createQuery(sb.toString())
+                            .setParameter("idServicio", idServicio);
+
+            if (logId) {
+                query.setParameter("idUsuario", idUsuario);
+            } else if (nisOCedula != null && !nisOCedula.isEmpty()) {
+                query.setParameter("nisOCedula", nisOCedula);
+            }
+
+            return ((Long) query.getSingleResult()).intValue();
+        } catch (Exception ex) {
+            ex.printStackTrace(); 
+            throw new RuntimeException("No se pudo contar las deudas.", ex);
+        }
+    }
+
 
 }
 

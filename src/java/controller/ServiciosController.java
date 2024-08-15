@@ -42,7 +42,6 @@ public class ServiciosController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response listarServiciosDeudas(JsonObject jsonObject) {
         try {
-
             Integer idUsuario = null;
             if (jsonObject.containsKey("id_usuario") && !jsonObject.isNull("id_usuario")) {
                 idUsuario = jsonObject.getInt("id_usuario");
@@ -51,49 +50,44 @@ public class ServiciosController {
             String nombreServicio = jsonObject.getString("nombre_servicio", "N/A");
             String nisOCedula = jsonObject.containsKey("nis_ocedula") && !jsonObject.isNull("nis_ocedula")
                                 ? jsonObject.getString("nis_ocedula") : null;
-            boolean logId = jsonObject.getBoolean("logId", true); // Por defecto, true, lo que indica que se usa el idUsuario
+            boolean logId = jsonObject.getBoolean("logId", true);
+            int page = jsonObject.getInt("page", 1);  // Número de página (default 1)
+            int size = jsonObject.getInt("size", 10); // Tamaño de página (default 10)
 
             Integer idServicio = servfacades.obtenerServicioPorNombre(nombreServicio);
             if (idServicio == null) {
-                JsonObject jsonResponse = Json.createObjectBuilder()
-                    .add("error", "El nombre del servicio proporcionado no existe.")
-                    .build();
-                return Response.status(Response.Status.NOT_FOUND).entity(jsonResponse).build();
+                return Response.status(Response.Status.NOT_FOUND).entity(
+                    Json.createObjectBuilder().add("error", "El nombre del servicio proporcionado no existe.").build()
+                ).build();
             }
 
-            System.out.println("[ID Servicio]: " + idServicio);
-            System.out.println("[ID Usuario - JSON]: " + idUsuario);
-            System.out.println("[NOMB SER - JSON]: " + nombreServicio);
-            System.out.println("[NIS - JSON]: " + nisOCedula);
-            System.out.println("[LOG - JSON]: " + logId);
-            
             // Reutiliza la función con logId para controlar la búsqueda
-            List<DeudasServicios> deudas = deufacades.listarDeaudasByParams(idUsuario, idServicio, nisOCedula, logId);
+            List<DeudasServicios> deudas = deufacades.listarDeaudasByParams(idUsuario, idServicio, nisOCedula, logId, page, size);
+            int totalDeudas = deufacades.contarDeudas(idUsuario, idServicio, nisOCedula, logId); // Método adicional para contar todas las deudas
 
             // Construir la respuesta JSON con las deudas encontradas
-            JsonObject jsonResponse;
+            JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
             if (deudas.isEmpty()) {
-                jsonResponse = Json.createObjectBuilder()
-                    .add("message", "No se encontraron deudas para el usuario y servicio especificados.")
-                    .build();
+                responseBuilder.add("message", "No se encontraron deudas para el usuario y servicio especificados.");
             } else {
                 JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
                 deudas.forEach(deuda -> {
-                    JsonObjectBuilder objectBuilder = Json.createObjectBuilder()
+                    arrayBuilder.add(Json.createObjectBuilder()
                         .add("id_deuda", deuda.getIdDeuda())
                         .add("monto_deuda", deuda.getMontoDeudaTotal())
-                        .add("fecha_vencimiento", deuda.getFechaVencimiento().toString());
-
-                    arrayBuilder.add(objectBuilder);
+                        .add("fecha_vencimiento", deuda.getFechaVencimiento().toString())
+                    );
                 });
 
-                jsonResponse = Json.createObjectBuilder()
-                    .add("message", "Deudas encontradas")
-                    .add("deudas", arrayBuilder)
-                    .build();
+                responseBuilder.add("message", "Deudas encontradas")
+                               .add("deudas", arrayBuilder)
+                               .add("total_deudas", totalDeudas)
+                               .add("pagina_actual", page)
+                               .add("tamano_pagina", size)
+                               .add("total_paginas", (int) Math.ceil((double) totalDeudas / size));
             }
 
-            return Response.ok(jsonResponse).build();
+            return Response.ok(responseBuilder.build()).build();
 
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -101,4 +95,5 @@ public class ServiciosController {
                 .build();
         }
     }
+
 }
