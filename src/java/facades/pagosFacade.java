@@ -24,12 +24,12 @@ public class pagosFacade {
             sb.append("SELECT p ");
             sb.append("FROM Pagos p ");
             sb.append("WHERE p.fechaPago BETWEEN :fechaInicio AND :fechaFin ");
-            sb.append("AND p.estadoPago = 'Pagado' ");  // Asumiendo que el estado de pago es 'Pagado'
+            sb.append("AND p.estadoPago = 'Pagado' ");
 
             if (logId && idUsuario != null) {
                 sb.append("AND p.idUsuario.idUsuario = :idUsuario ");
             } else if (!logId && nisOCedula != null && !nisOCedula.isEmpty()) {
-                sb.append("AND p.nis = :nisOCedula ");
+                sb.append("AND p.idDeuda.numeroReferenciaComprobante = :nisOCedula ");
             }
 
             Query query = em.createQuery(sb.toString(), Pagos.class)
@@ -52,18 +52,20 @@ public class pagosFacade {
         }
     }
 
+
+
     public int contarPagos(Integer idUsuario, String nisOCedula, Date fechaInicio, Date fechaFin, boolean logId) {
         try {
             StringBuilder sb = new StringBuilder();
             sb.append("SELECT COUNT(p) ");
             sb.append("FROM Pagos p ");
             sb.append("WHERE p.fechaPago BETWEEN :fechaInicio AND :fechaFin ");
-            sb.append("AND p.estadoPago = 'Pagado' ");  // Asumiendo que el estado de pago es 'Pagado'
+            sb.append("AND p.estadoPago = 'Pagado' ");
 
             if (logId && idUsuario != null) {
                 sb.append("AND p.idUsuario.idUsuario = :idUsuario ");
             } else if (!logId && nisOCedula != null && !nisOCedula.isEmpty()) {
-                sb.append("AND p.nis = :nisOCedula ");
+                sb.append("AND p.idDeuda.numeroReferenciaComprobante = :nisOCedula ");
             }
 
             Query query = em.createQuery(sb.toString())
@@ -82,4 +84,5 @@ public class pagosFacade {
             throw new RuntimeException("No se pudo contar los pagos.", ex);
         }
     }
+
 }
