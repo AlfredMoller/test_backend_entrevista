@@ -37,6 +37,9 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Usuario implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuario", fetch = FetchType.LAZY)
+    private Collection<Pagos> pagosCollection;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuario", fetch = FetchType.LAZY)
     private Collection<Cuentas> cuentasCollection;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuario", fetch = FetchType.LAZY)
@@ -197,5 +200,14 @@ public class Usuario implements Serializable {
 
     public void setCuentasCollection(Collection<Cuentas> cuentasCollection) {
         this.cuentasCollection = cuentasCollection;
+    }
+
+    @XmlTransient
+    public Collection<Pagos> getPagosCollection() {
+        return pagosCollection;
+    }
+
+    public void setPagosCollection(Collection<Pagos> pagosCollection) {
+        this.pagosCollection = pagosCollection;
     }
 }

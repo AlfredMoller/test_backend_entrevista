@@ -7,8 +7,10 @@ package entities;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -19,12 +21,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -42,6 +46,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "DeudasServicios.findByFechaVencimiento", query = "SELECT d FROM DeudasServicios d WHERE d.fechaVencimiento = :fechaVencimiento")
     , @NamedQuery(name = "DeudasServicios.findByEstadoDeuda", query = "SELECT d FROM DeudasServicios d WHERE d.estadoDeuda = :estadoDeuda")})
 public class DeudasServicios implements Serializable {
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idDeuda", fetch = FetchType.LAZY)
+    private Collection<Pagos> pagosCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -180,6 +187,15 @@ public class DeudasServicios implements Serializable {
     @Override
     public String toString() {
         return "entities.DeudasServicios[ idDeuda=" + idDeuda + " ]";
+    }
+
+    @XmlTransient
+    public Collection<Pagos> getPagosCollection() {
+        return pagosCollection;
+    }
+
+    public void setPagosCollection(Collection<Pagos> pagosCollection) {
+        this.pagosCollection = pagosCollection;
     }
     
 }
