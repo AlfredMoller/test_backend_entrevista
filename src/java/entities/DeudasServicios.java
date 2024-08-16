@@ -39,7 +39,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "DeudasServicios.findByNumeroReferenciaComprobante", query = "SELECT d FROM DeudasServicios d WHERE d.numeroReferenciaComprobante = :numeroReferenciaComprobante")
     , @NamedQuery(name = "DeudasServicios.findByMontoDeudaTotal", query = "SELECT d FROM DeudasServicios d WHERE d.montoDeudaTotal = :montoDeudaTotal")
     , @NamedQuery(name = "DeudasServicios.findByMontoAbonado", query = "SELECT d FROM DeudasServicios d WHERE d.montoAbonado = :montoAbonado")
-    , @NamedQuery(name = "DeudasServicios.findByFechaVencimiento", query = "SELECT d FROM DeudasServicios d WHERE d.fechaVencimiento = :fechaVencimiento")})
+    , @NamedQuery(name = "DeudasServicios.findByFechaVencimiento", query = "SELECT d FROM DeudasServicios d WHERE d.fechaVencimiento = :fechaVencimiento")
+    , @NamedQuery(name = "DeudasServicios.findByEstadoDeuda", query = "SELECT d FROM DeudasServicios d WHERE d.estadoDeuda = :estadoDeuda")})
 public class DeudasServicios implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -65,6 +66,11 @@ public class DeudasServicios implements Serializable {
     @Column(name = "fecha_vencimiento")
     @Temporal(TemporalType.DATE)
     private Date fechaVencimiento;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 20)
+    @Column(name = "estado_deuda")
+    private String estadoDeuda;
     @JoinColumn(name = "id_servicio", referencedColumnName = "id_servicio")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Servicios idServicio;
@@ -79,11 +85,12 @@ public class DeudasServicios implements Serializable {
         this.idDeuda = idDeuda;
     }
 
-    public DeudasServicios(Integer idDeuda, String numeroReferenciaComprobante, BigDecimal montoDeudaTotal, Date fechaVencimiento) {
+    public DeudasServicios(Integer idDeuda, String numeroReferenciaComprobante, BigDecimal montoDeudaTotal, Date fechaVencimiento, String estadoDeuda) {
         this.idDeuda = idDeuda;
         this.numeroReferenciaComprobante = numeroReferenciaComprobante;
         this.montoDeudaTotal = montoDeudaTotal;
         this.fechaVencimiento = fechaVencimiento;
+        this.estadoDeuda = estadoDeuda;
     }
 
     public Integer getIdDeuda() {
@@ -124,6 +131,14 @@ public class DeudasServicios implements Serializable {
 
     public void setFechaVencimiento(Date fechaVencimiento) {
         this.fechaVencimiento = fechaVencimiento;
+    }
+
+    public String getEstadoDeuda() {
+        return estadoDeuda;
+    }
+
+    public void setEstadoDeuda(String estadoDeuda) {
+        this.estadoDeuda = estadoDeuda;
     }
 
     public Servicios getIdServicio() {
