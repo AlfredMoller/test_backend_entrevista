@@ -83,7 +83,7 @@ Utiliza la siguiente estructura JSON:
 }
 
 
-#### Si no estás logueado
+##### Si no estás logueado
 Utiliza esta estructura JSON con nis_ocedula:
 ```
 {
