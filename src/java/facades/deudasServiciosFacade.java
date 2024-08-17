@@ -2,6 +2,7 @@ package facades;
 
 import entities.DeudasServicios;
 import entities.Servicios;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -117,6 +118,30 @@ public class deudasServiciosFacade {
         } catch (Exception ex) {
             ex.printStackTrace(); // Imprime la traza del error para fines de depuración
             throw new RuntimeException("Error al buscar la deuda por ID.", ex);
+        }
+    }
+     
+    
+    // Función para actualizar la deuda
+    public void actualizarDeuda(Integer idDeuda, BigDecimal montoPago) {
+        try {
+            StringBuilder sbActualizarDeuda = new StringBuilder();
+            sbActualizarDeuda.append("UPDATE public.deudas_servicios ");
+            sbActualizarDeuda.append("SET monto_abonado = monto_abonado + ?1, ");
+            sbActualizarDeuda.append("estado_deuda = CASE ");
+            sbActualizarDeuda.append("    WHEN monto_abonado + ?1 >= monto_deuda_total THEN 'Cancelado' ");
+            sbActualizarDeuda.append("    ELSE estado_deuda ");
+            sbActualizarDeuda.append("END ");
+            sbActualizarDeuda.append("WHERE id_deuda = ?2");
+
+            Query queryActualizarDeuda = em.createNativeQuery(sbActualizarDeuda.toString());
+            queryActualizarDeuda.setParameter(1, montoPago);
+            queryActualizarDeuda.setParameter(2, idDeuda);
+
+            queryActualizarDeuda.executeUpdate();
+        } catch (Exception ex) {
+            LOGGER.error("Error al actualizar la deuda: {}", ex.getMessage());
+            throw new RuntimeException("Error al actualizar la deuda.", ex);
         }
     }
 }

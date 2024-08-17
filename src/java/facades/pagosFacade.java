@@ -1,8 +1,10 @@
 package facades;
 
 import entities.Pagos;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -146,6 +148,27 @@ public class pagosFacade {
         } catch (Exception ex) {
             LOGGER.error("Error al contar los pagos por servicio: {}", ex.getMessage());
             throw new RuntimeException("No se pudo contar los pagos por servicio.", ex);
+        }
+    }
+    
+    
+    public boolean registrarPago(Integer idUsuario, Integer idDeuda, Integer idServicio, BigDecimal montoPago) {
+        try {
+            StringBuilder sbInsertPago = new StringBuilder();
+            sbInsertPago.append("INSERT INTO public.pagos (id_usuario, id_deuda, id_servicio, monto_pago, fecha_pago, estado_pago) ");
+            sbInsertPago.append("VALUES (?1, ?2, ?3, ?4, CURRENT_TIMESTAMP, 'Pagado')");
+
+            Query queryInsertPago = em.createNativeQuery(sbInsertPago.toString());
+            queryInsertPago.setParameter(1, idUsuario);
+            queryInsertPago.setParameter(2, idDeuda);
+            queryInsertPago.setParameter(3, idServicio);
+            queryInsertPago.setParameter(4, montoPago);
+
+            int registroExitoso = queryInsertPago.executeUpdate();
+            return registroExitoso > 0 ; // Devuelve true si el registro fue exitoso                   
+        } catch (Exception ex) {
+            LOGGER.error("Error al registrar el pago: {}", ex.getMessage());
+            throw new RuntimeException("Error al registrar el pago.", ex);
         }
     }
 
