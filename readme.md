@@ -93,6 +93,10 @@ Utiliza esta estructura JSON con nis_ocedula:
     "size": 10
 }
 ```
+
+- **Endpoint**: `http://localhost:8080/pago_servicios/v1/servicios/consultarDeudas`
+- **Método**: POST
+
 ### 5.  Procesar Pago
 Para procesar el pago de una deuda, utiliza el campo id_deuda. Este endpoint solo está disponible para usuarios logueados.
 ```json
@@ -102,7 +106,61 @@ Para procesar el pago de una deuda, utiliza el campo id_deuda. Este endpoint sol
 
 ```
 
+- **Endpoint**: `http://localhost:8080/pago_servicios/v1/pagos/procesarPago`
+- **Método**: POST
 
+
+### 6.  Consultar Pagos por Fecha
+#### Si estás logueado
+
+```json
+{
+    "fecha_inicio": "2024-08-01",
+    "fecha_fin": "2024-08-31",
+    "page": 1,
+    "size": 10
+}
+
+```
+##### Si no estás logueado
+Utiliza esta estructura JSON con nis_ocedula:
+
+```json
+{
+    "fecha_inicio": "2024-08-01",
+    "fecha_fin": "2024-08-31",
+    "nis_ocedula": "123456789",
+    "page": 1,
+    "size": 10
+}
+```
+- **Endpoint**: ` http://localhost:8080/pago_servicios/v1/pagos/listarPagosPorFecha`
+- **Método**: POST
+
+### 7.  Consultar Pagos por Fecha
+#### Si estás logueado
+
+```json
+{
+    "nombre_servicio": "Personal",
+    "page": 1,
+    "size": 10
+}
+
+```
+
+##### Si no estás logueado
+Utiliza esta estructura JSON con nis_ocedula:
+
+```json
+{
+    "nis_ocedula": "123456789",
+    "nombre_servicio": "Personal",
+    "page": 1,
+    "size": 10
+}
+
+```
 
 ---
 
