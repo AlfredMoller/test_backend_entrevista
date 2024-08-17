@@ -100,5 +100,24 @@ public class deudasServiciosFacade {
             throw new RuntimeException("Error al buscar la deuda.", ex);
         }
     }
+     
+     
+     public DeudasServicios buscarDeudaPorId(Integer idDeuda) {
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append("SELECT d FROM DeudasServicios d ");
+            sb.append("WHERE d.idDeuda = :idDeuda");
+
+            Query query = em.createQuery(sb.toString(), DeudasServicios.class);
+            query.setParameter("idDeuda", idDeuda);
+
+            return (DeudasServicios) query.getSingleResult();
+        } catch (NoResultException e) {
+            return null; // Si no se encuentra la deuda, retornar null
+        } catch (Exception ex) {
+            ex.printStackTrace(); // Imprime la traza del error para fines de depuración
+            throw new RuntimeException("Error al buscar la deuda por ID.", ex);
+        }
+    }
 }
 

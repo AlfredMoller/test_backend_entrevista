@@ -18,11 +18,11 @@ public class cuentasfacade {
             // Construcción de la consulta para sumar los saldos de todas las cuentas del usuario
             StringBuilder sb = new StringBuilder();
             sb.append("SELECT SUM(c.saldo) ");
-            sb.append("FROM cuentas c ");
-            sb.append("WHERE c.idUsuario.idUsuario = ?1");
+            sb.append("FROM Cuentas c ");
+            sb.append("WHERE c.idUsuario.idUsuario = :idUsuario");
 
             Query query = em.createQuery(sb.toString());
-            query.setParameter(1, idUsuario);
+            query.setParameter("idUsuario", idUsuario);
 
             BigDecimal saldoTotal = (BigDecimal) query.getSingleResult();
             

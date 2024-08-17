@@ -158,12 +158,12 @@ public class pagosController {
                         //.add("nombre_servicio", pago.getNombreServicio()) // si tienes el nombre en la entidad
                 });
 
-                responseBuilder.add("message", "Pagos encontrados")
-                               .add("pagos", arrayBuilder)
-                               .add("total_pagos", totalPagos)
-                               .add("pagina_actual", page)
-                               .add("tamano_pagina", size)
-                               .add("total_paginas", (int) Math.ceil((double) totalPagos / size));
+                responseBuilder.add("message", "Pagos encontrados");
+                               //.add("pagos", arrayBuilder)
+                               //.add("total_pagos", totalPagos)
+                               //.add("pagina_actual", page)
+                               //.add("tamano_pagina", size)
+                               //.add("total_paginas", (int) Math.ceil((double) totalPagos / size));
             }
 
             return Response.ok(responseBuilder.build()).build();
@@ -176,7 +176,7 @@ public class pagosController {
     }
     
     
-    @POST
+    /*@POST
     @Path("procesarPago")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -201,6 +201,10 @@ public class pagosController {
                 ).build();
             }
             
+            System.out.println("Usuario: " + idUsuario);
+            System.out.println("NombServicio: " + nombreServicio);
+            System.out.println("Fecha: " + fechaDeudaStr);
+            
             // Verificar si la deuda existe para el usuario, servicio y fecha especificados
             DeudasServicios deuda = deufacades.buscarDeudaPorFechaYServicio(idUsuario, idServicio, fechaDeuda);
             if (deuda == null) {
@@ -224,6 +228,59 @@ public class pagosController {
             }
 
             return Response.ok(jsonResponse).build();
+            
+            /*JsonObject jsonResponse = Json.createObjectBuilder()
+                .add("message", "Usuario registrado con éxito!")
+                .build();
+
+            return Response.ok(jsonResponse).build();*/
+
+        /*} catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                .entity("Error al procesar la solicitud: " + e.getMessage())
+                .build();
+        }
+    }*/
+    
+    
+    @POST
+    @Path("procesarPago")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response verificarSaldoParaPago(JsonObject jsonObject) {
+        try {
+            Integer idUsuario = jsonObject.getInt("id_usuario");
+            Integer idDeuda = jsonObject.getInt("id_deuda");
+
+            // Busca la deuda por su ID
+            DeudasServicios deuda = deufacades.buscarDeudaPorId(idDeuda);
+            if (deuda == null || !deuda.getIdUsuario().getIdUsuario().equals(idUsuario)) {
+                return Response.status(Response.Status.NOT_FOUND).entity(
+                    Json.createObjectBuilder().add("error", "No se encontró una deuda con el ID proporcionado para este usuario.").build()
+                ).build();
+            }
+
+            BigDecimal montoDeuda = deuda.getMontoDeudaTotal();
+            
+            System.out.println("Monto Deuda: " + montoDeuda);
+
+
+            // Verificar si el usuario tiene saldo suficiente para pagar la deuda
+            boolean saldoSuficiente = cufacades.tieneSaldoSuficiente(idUsuario, montoDeuda);
+
+            JsonObject jsonResponse;
+            if (saldoSuficiente) {
+                // Procesar el pago (actualizar estado de la deuda, registrar el pago, etc.)
+                jsonResponse = Json.createObjectBuilder()
+                    .add("message", "El usuario tiene suficiente saldo para pagar la deuda.")
+                    .build();
+            } else {
+                jsonResponse = Json.createObjectBuilder()
+                    .add("message", "El usuario no tiene suficiente saldo para pagar la deuda.")
+                    .build();
+            }
+
+            return Response.ok(jsonResponse).build();
 
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -231,4 +288,5 @@ public class pagosController {
                 .build();
         }
     }
+
 }
