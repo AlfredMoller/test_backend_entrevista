@@ -46,6 +46,55 @@ Para obtener detalles más específicos sobre cada endpoint, consulta la documen
 
 4. Accede a los endpoints a través de tu navegador o cliente REST preferido.
 
+
+## Funcionalidades
+
+### 1. Registro de Usuario
+
+Para comenzar a utilizar la API, primero debes registrarte. Utiliza el siguiente endpoint:
+
+- **Endpoint**: `http://localhost:8080/pago_servicios/v1/usuario/registrar`
+- **Método**: POST
+
+### 2. Crear Deudas
+
+Una vez registrado, debes crear las respectivas deudas en la tabla `deudas_servicios` y agregar un saldo en la tabla `cuenta`. El saldo se tomará del último saldo registrado hasta la fecha. Si no sabes qué servicio agregar, consulta la tabla `servicios`.
+
+### 3. Inicio de Sesión
+
+Para iniciar sesión, utiliza el siguiente endpoint:
+
+- **Endpoint**: `http://localhost:8080/pago_servicios/v1/usuario/login`
+- **Método**: POST
+
+### 4. Consultar Deudas
+
+Para consultar las deudas, puedes hacerlo de dos maneras:
+
+#### Si estás logueado
+
+Utiliza la siguiente estructura JSON:
+
+```json
+{
+    "nombre_servicio": "Personal",
+    "page": 1,
+    "size": 10
+}
+
+
+#### Si no estás logueado
+Utiliza esta estructura JSON con nis_ocedula:
+```
+{
+    "nis_ocedula": "123456789",
+    "nombre_servicio": "Personal",
+    "page": 1,
+    "size": 10
+}
+
+
+
 ---
 
 Para más información, consulta la [documentación](https://documenter.getpostman.com/view/10049027/2sA3s9BnRd).
