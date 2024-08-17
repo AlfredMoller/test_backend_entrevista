@@ -1,0 +1,287 @@
+{
+	"info": {
+		"_postman_id": "85cb0f1f-e932-470e-afd1-7aefd7b6b290",
+		"name": "Pagos de Servicios",
+		"description": "Este conjunto de endpoints, desarrollado con JSF (Java Server Faces), está orientado a la gestión de pagos de servicios y ofrece las siguientes funcionalidades:\n\n- **Consultar Deudas:** Obtén información detallada sobre las deudas pendientes en base a los servicios.\n    \n- **Procesar Pagos:** Realiza el procesamiento de pagos de manera segura y eficiente.\n    \n- **Consultar Pagos por Fecha:** Consulta los pagos realizados dentro de un rango de fechas específico.\n    \n- **Consultar Pagos por Servicio:** Accede a la información de los pagos en base a los servicios prestados.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10049027"
+	},
+	"item": [
+		{
+			"name": "Deudas",
+			"item": [
+				{
+					"name": "Listar Deudas Por Servicios",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nombre_servicio\": \"ANDE\",\r\n  \"page\": 1,\r\n  \"size\": 10\r\n}\r\n\r\n\r\n/*\r\n{\r\n  \"nombre_servicio\": \"Personal\",\r\n  \"nis_cedula\": \"123456789\",\r\n  \"page\": 1,\r\n  \"size\": 10\r\n}\r\n*/\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/pago_servicios/v1/servicios/consultarDeudas",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"pago_servicios",
+								"v1",
+								"servicios",
+								"consultarDeudas"
+							]
+						},
+						"description": "### Consultar Deudas Servicios\n\nEste endpoint permite al cliente obtener información sobre las deudas pendientes para servicios específicos.\n\n#### Request Body\n\n- `nombre_servicio` (string): El nombre del servicio para el cual se deben recuperar las deudas. Ej: ANDE, Tigo, Personal, Etc.\n    \n- `nis_cedula` (string): El identificador único del usuario del servicio.\n    \n- `page` (integer): El número de página para los resultados paginados.\n    \n- `size` (integer): La cantidad de ítems por página.\n    \n\n#### Response\n\nLa respuesta es un objeto JSON con las siguientes propiedades:\n\n- `message` (string): Un mensaje relacionado con la respuesta.\n    \n- `deudas` (array): Un arreglo de objetos que contiene información sobre las deudas, incluyendo `id_deuda` (integer), `monto_deuda` (integer) y `fecha_vencimiento` (string).\n    \n- `total_deudas` (integer): El número total de deudas.\n    \n- `pagina_actual` (integer): El número de la página actual.\n    \n- `tamano_pagina` (integer): El tamaño de la página.\n    \n- `total_paginas` (integer): El número total de páginas.\n    \n\n#### Example\n\n``` json\n{\n  \"message\": \"\",\n  \"deudas\": [\n    {\n      \"id_deuda\": 0,\n      \"monto_deuda\": 0,\n      \"fecha_vencimiento\": \"\"\n    }\n  ],\n  \"total_deudas\": 0,\n  \"pagina_actual\": 0,\n  \"tamano_pagina\": 0,\n  \"total_paginas\": 0\n}\n\n ```"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Pagos",
+			"item": [
+				{
+					"name": "Procesar Pago",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id_deuda\": 1\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/pago_servicios/v1/pagos/procesarPago",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"pago_servicios",
+								"v1",
+								"pagos",
+								"procesarPago"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Pagos Por Fecha",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "/*\r\n{\r\n    \"fecha_inicio\": \"2024-08-01\",\r\n    \"fecha_fin\": \"2024-08-31\",\r\n    \"nis_cedula\": \"123456789\",\r\n    \"page\": 1,\r\n    \"size\": 10\r\n}\r\n*/\r\n\r\n{\r\n    \"fecha_inicio\": \"2024-08-01\",\r\n    \"fecha_fin\": \"2024-08-31\",\r\n    \"page\": 1,\r\n    \"size\": 10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/pago_servicios/v1/pagos/listarPagosPorFecha",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"pago_servicios",
+								"v1",
+								"pagos",
+								"listarPagosPorFecha"
+							]
+						},
+						"description": "### Consultar Pagos por Fechas\n\nSe utiliza para recuperar una lista de pagos dentro de un rango de fechas especificado.\n\n### Request Body\n\n- `fecha_inicio` (string): La fecha de inicio del rango para el cual se deben listar los pagos.\n    \n- `fecha_fin` (string): La fecha de fin del rango para el cual se deben listar los pagos.\n    \n- `nis_cedula` (string): El identificador para el pago.\n    \n- `page` (integer): El número de página para los resultados paginados.\n    \n- `size` (integer): La cantidad de ítems por página.\n    \n\n### Response\n\nLa respuesta estará en formato JSON con el siguiente esquema:\n\n``` json\n{\n    \"message\": \"\",\n    \"pagos\": [\n        {\n            \"id_pago\": 0,\n            \"monto_pago\": \"\",\n            \"fecha_pago\": \"\"\n        }\n    ],\n    \"total_pagos\": 0,\n    \"pagina_actual\": 0,\n    \"tamano_pagina\": 0,\n    \"total_paginas\": 0\n}\n\n ```\n\n- `message` (string): A message related to the response.\n    \n- `pagos` (array): An array of payment objects containing `id_pago`, `monto_pago`, and `fecha_pago`.\n    \n- `total_pagos` (integer): The total number of payments.\n    \n- `pagina_actual` (integer): The current page number.\n    \n- `tamano_pagina` (integer): The size of the page.\n    \n- `total_paginas` (integer): The total number of pages."
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Pagos Por Servicio",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\r\n{\r\n    \"nombre_servicio\": \"Personal\",\r\n    \"page\": 1,\r\n    \"size\": 10\r\n}\r\n\r\n\r\n/*\r\n{\r\n    \"nis_cedula\": \"123456789\",\r\n    \"nombre_servicio\": \"Personal\",\r\n    \"page\": 1,\r\n    \"size\": 10\r\n}\r\n*/",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/pago_servicios/v1/pagos/listarPagosPorServicio",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"pago_servicios",
+								"v1",
+								"pagos",
+								"listarPagosPorServicio"
+							]
+						},
+						"description": "# Listar Pagos por Servicio\n\nEste endpoint realiza una solicitud para listar los pagos asociados a un servicio específico.\n\n## Request Body\n\n- `nis_cedula` (string): NIS o cédula asociada al usuario.\n    \n- `nombre_servicio` (string): Nombre del servicio del cual se desean listar los pagos.\n    \n- `page` (integer): Número de página para la lista de pagos.\n    \n- `size` (integer): Tamaño de la página para la lista de pagos.\n    \n\n## Response\n\nEl cuerpo de la respuesta es un JSON con la siguiente estructura:\n\n``` json\n{\n    \"message\": \"mensaje de respuesta\",\n    \"pagos\": [\n        {\n            \"id_pago\": \"identificador del pago\",\n            \"monto_pago\": \"monto del pago\",\n            \"fecha_pago\": \"fecha del pago\"\n        }\n    ],\n    \"total_pagos\": \"total de pagos\",\n    \"pagina_actual\": \"página actual\",\n    \"tamano_pagina\": \"tamaño de la página\",\n    \"total_paginas\": \"total de páginas\"\n}\n\n ```\n\nThis endpoint allows you to retrieve a list of payments for a specific service.\n\n#### Request Body\n\n- `nis_ocedula` (string) - The identifier for the service recipient.\n    \n- `nombre_servicio` (string) - The name of the service.\n    \n- `page` (integer) - The page number for paginated results.\n    \n- `size` (integer) - The number of items per page.\n    \n\n#### Response\n\nThe response will be in JSON format and will have the following schema:\n\n``` json\n{\n    \"message\": \"string\",\n    \"pagos\": [\n        {\n            \"id_pago\": \"integer\",\n            \"monto_pago\": \"string\",\n            \"fecha_pago\": \"string\"\n        }\n    ],\n    \"total_pagos\": \"integer\",\n    \"pagina_actual\": \"integer\",\n    \"tamano_pagina\": \"integer\",\n    \"total_paginas\": \"integer\"\n}\n\n ```\n\n- `message` (string) - A message related to the response.\n    \n- `pagos` (array) - An array of payment objects.\n    \n    - `id_pago` (integer) - The ID of the payment.\n        \n    - `monto_pago` (string) - The amount of the payment.\n        \n    - `fecha_pago` (string) - The date of the payment.\n        \n- `total_pagos` (integer) - The total number of payments.\n    \n- `pagina_actual` (integer) - The current page number.\n    \n- `tamano_pagina` (integer) - The size of the page.\n    \n- `total_paginas` (integer) - The total number of pages.\n    \n\nThis endpoint allows you to list payments for a specific service.\n\n#### Request Body\n\n- `nis_ocedula` (string): The NIS or cedula number associated with the payment.\n    \n- `nombre_servicio` (string): The name of the service for which payments are to be listed.\n    \n- `page` (integer): The page number for paginated results.\n    \n- `size` (integer): The number of items per page.\n    \n\n#### Response\n\nThe response will be in JSON format with the following schema:\n\n``` json\n{\n    \"error\": \"\"\n}\n\n ```"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Registrar Usuarios",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nombre_usuario\": \"Diego\",\r\n    \"apellido_usuario\": \"Duarte\",\r\n    \"email_usuario\": \"diego@example.com\",\r\n    \"telefono_usuario\": \"+595 983211667\",\r\n    \"clave_usuario\": \"1234\",\r\n    \"cedula_usuario\": \"4789999\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/pago_servicios/v1/usuario/registrar",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"pago_servicios",
+						"v1",
+						"usuario",
+						"registrar"
+					]
+				},
+				"description": "### Registro de Usuario\n\nEste endpoint se utiliza para registrar un nuevo usuario en el servicio de **pago_servicios.**\n\n### Request Body\n\n- nombre_usuario (string, required): El nombre del usuario.\n    \n- apellido_usuario (string, required): El apellido del usuario.\n    \n- email_usuario (string, required): La dirección de correo electrónico del usuario.\n    \n- telefono_usuario (string, required): El número de teléfono del usuario.\n    \n- clave_usuario (string, required): La contraseña para la cuenta del usuario.\n    \n- cedula_usuario (string, required): El número de identificación del usuarioEnd.\n    \n\n### Response\n\nLa respuesta de esta solicitud es un esquema JSON. Incluye la definición del esquema para la estructura de los datos de la respuesta, describiendo las propiedades esperadas y sus tipos de datos."
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Guarda la respuesta en el entorno\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.environment.set(\"csrf_token\", jsonData.csrf_token);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email_usuario\": \"ignacio@example.com\",\r\n    \"clave_usuario\": \"123\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/pago_servicios/v1/usuario/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"pago_servicios",
+						"v1",
+						"usuario",
+						"login"
+					]
+				},
+				"description": "### Inicio de Sesión de Usuario\n\nEste endpoint permite a los usuarios iniciar sesión en el sistema.\n\n**Request Body**\n\n- `email_usuario` (string): El correo electrónico del usuario.\n    \n- `clave_usuario` (string): La contraseña del usuario.\n    \n\n**Response**  \nLa respuesta contendrá el token de autenticación del usuario y la información del usuario."
+			},
+			"response": []
+		},
+		{
+			"name": "Logout",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/pago_servicios/v1/usuario/logout",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"pago_servicios",
+						"v1",
+						"usuario",
+						"logout"
+					]
+				},
+				"description": "### Cerrar Sesión de Usuario\n\nEste endpoint se utiliza para cerrar la sesión de un usuario en el sistema.\n\n#### Request Body Parameters\n\n- `user_id` (string, required): El ID del usuario que se va a cerrar sesión.\n    \n\n#### Response\n\n- `status` (string): El estado de la operación de cierre de sesión.\n    \n- `message` (string): Un mensaje que indica el resultado de la operación de cierre de sesión."
+			},
+			"response": []
+		}
+	]
+}
