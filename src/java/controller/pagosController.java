@@ -91,14 +91,14 @@ public class pagosController {
             }
 
             // Extraer nisOCedula del JsonObject si está presente
-            String nisOCedula = jsonObject.containsKey("nis_ocedula") && !jsonObject.isNull("nis_ocedula")
-                    ? jsonObject.getString("nis_ocedula") : null;
+            String nisOCedula = jsonObject.containsKey("nis_cedula") && !jsonObject.isNull("nis_cedula")
+                    ? jsonObject.getString("nis_cedula") : null;
 
             // Validar que nisOCedula sea obligatorio si no hay sesión activa
             if (idUsuario == null && (nisOCedula == null || nisOCedula.isEmpty())) {
                 return Response.status(Response.Status.BAD_REQUEST)
                         .entity(Json.createObjectBuilder()
-                            .add("error", "El campo nis_ocedula es obligatorio si no está logueado.")
+                            .add("error", "El campo nis_cedula es obligatorio si no está logueado.")
                             .build())
                         .build();
             }
@@ -151,8 +151,8 @@ public class pagosController {
             // Extraer el nombre del servicio
             String nombreServicio = jsonObject.getString("nombre_servicio", "N/A");
             Integer idUsuario = null;
-            String nisOCedula = jsonObject.containsKey("nis_ocedula") && !jsonObject.isNull("nis_ocedula")
-                                ? jsonObject.getString("nis_ocedula") : null;
+            String nisOCedula = jsonObject.containsKey("nis_cedula") && !jsonObject.isNull("nis_cedula")
+                                ? jsonObject.getString("nis_cedula") : null;
 
             // Obtener el ID del usuario desde la sesión
             HttpSession session = request.getSession(false);
@@ -170,7 +170,7 @@ public class pagosController {
             if (idUsuario == null && (nisOCedula == null || nisOCedula.isEmpty())) {
                 return Response.status(Response.Status.BAD_REQUEST)
                         .entity(Json.createObjectBuilder()
-                            .add("error", "El campo nis_ocedula es obligatorio si no está logueado.")
+                            .add("error", "El campo nis_cedula es obligatorio si no está logueado.")
                             .build())
                         .build();
             }

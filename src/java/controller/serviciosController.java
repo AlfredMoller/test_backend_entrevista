@@ -64,19 +64,19 @@ public class serviciosController {
             // Validar que nisOCedula sea obligatorio si no hay sesión
             String nisOCedula = null;
             if (idUsuario == null) { // No hay sesión activa
-                nisOCedula = jsonObject.containsKey("nis_ocedula") && !jsonObject.isNull("nis_ocedula")
-                        ? jsonObject.getString("nis_ocedula") : null;
+                nisOCedula = jsonObject.containsKey("nis_cedula") && !jsonObject.isNull("nis_cedula")
+                        ? jsonObject.getString("nis_cedula") : null;
 
                 if (nisOCedula == null || nisOCedula.isEmpty()) {
                     return Response.status(Response.Status.BAD_REQUEST)
                             .entity(Json.createObjectBuilder()
-                                .add("error", "El campo nis_ocedula es obligatorio si no está logueado.")
+                                .add("error", "El campo nis_cedula es obligatorio si no está logueado.")
                                 .build())
                             .build();
                 }
             } else {
-                nisOCedula = jsonObject.containsKey("nis_ocedula") && !jsonObject.isNull("nis_ocedula")
-                        ? jsonObject.getString("nis_ocedula") : null;
+                nisOCedula = jsonObject.containsKey("nis_cedula") && !jsonObject.isNull("nis_cedula")
+                        ? jsonObject.getString("nis_cedula") : null;
             }
 
             String nombreServicio = jsonObject.getString("nombre_servicio", "N/A");

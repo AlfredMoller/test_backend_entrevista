@@ -87,7 +87,7 @@ Utiliza la siguiente estructura JSON:
 Utiliza esta estructura JSON con nis_ocedula:
 ```json
 {
-    "nis_ocedula": "123456789",
+    "nis_cedula": "123456789",
     "nombre_servicio": "Personal",
     "page": 1,
     "size": 10
@@ -129,7 +129,7 @@ Utiliza esta estructura JSON con nis_ocedula:
 {
     "fecha_inicio": "2024-08-01",
     "fecha_fin": "2024-08-31",
-    "nis_ocedula": "123456789",
+    "nis_cedula": "123456789",
     "page": 1,
     "size": 10
 }
@@ -154,7 +154,7 @@ Utiliza esta estructura JSON con nis_ocedula:
 
 ```json
 {
-    "nis_ocedula": "123456789",
+    "nis_cedula": "123456789",
     "nombre_servicio": "Personal",
     "page": 1,
     "size": 10
