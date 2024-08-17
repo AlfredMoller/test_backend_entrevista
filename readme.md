@@ -81,7 +81,7 @@ Utiliza la siguiente estructura JSON:
     "page": 1,
     "size": 10
 }
-
+```
 
 ##### Si no estás logueado
 Utiliza esta estructura JSON con nis_ocedula:
@@ -92,7 +92,7 @@ Utiliza esta estructura JSON con nis_ocedula:
     "page": 1,
     "size": 10
 }
-
+```
 
 
 ---
