@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Usuario.findByEmailUsuario", query = "SELECT u FROM Usuario u WHERE u.emailUsuario = :emailUsuario"),
     @NamedQuery(name = "Usuario.findByTelefonoUsuario", query = "SELECT u FROM Usuario u WHERE u.telefonoUsuario = :telefonoUsuario"),
     @NamedQuery(name = "Usuario.findByClaveUsuario", query = "SELECT u FROM Usuario u WHERE u.claveUsuario = :claveUsuario"),
-    @NamedQuery(name = "Usuario.findByIdCiudad", query = "SELECT u FROM Usuario u WHERE u.idCiudad = :idCiudad"),
+    //@NamedQuery(name = "Usuario.findByIdCiudad", query = "SELECT u FROM Usuario u WHERE u.idCiudad = :idCiudad"),
     @NamedQuery(name = "Usuario.findByCedulaUsuario", query = "SELECT u FROM Usuario u WHERE u.cedulaUsuario = :cedulaUsuario")
 })
 public class Usuario implements Serializable {
@@ -75,8 +75,8 @@ public class Usuario implements Serializable {
     //@Column(name = "uuid_usuario")
     //private UUID uuidUsuario; // Tipo UUID
 
-    @Column(name = "id_ciudad")
-    private Integer idCiudad;
+    //@Column(name = "id_ciudad")
+    //private Integer idCiudad;
 
     @Size(max = 20)
     @Column(name = "cedula_usuario")
@@ -140,13 +140,13 @@ public class Usuario implements Serializable {
         this.uuidUsuario = uuidUsuario;
     }*/
 
-    public Integer getIdCiudad() {
+    /*public Integer getIdCiudad() {
         return idCiudad;
     }
 
     public void setIdCiudad(Integer idCiudad) {
         this.idCiudad = idCiudad;
-    }
+    }*/
 
     public String getCedulaUsuario() {
         return cedulaUsuario;

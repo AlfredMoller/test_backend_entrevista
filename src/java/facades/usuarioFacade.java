@@ -35,8 +35,8 @@ public class usuarioFacade {
             LOGGER.info("Preparando consulta nativa para insertar el usuario.");
 
             StringBuilder sb = new StringBuilder();
-            sb.append("INSERT INTO public.usuario (nombre_usuario, apellido_usuario, email_usuario, clave_usuario ,telefono_usuario, id_ciudad, cedula_usuario) ");
-            sb.append("VALUES(?, ?, ?, ?, ?, ?, ?)");
+            sb.append("INSERT INTO public.usuario (nombre_usuario, apellido_usuario, email_usuario, clave_usuario, telefono_usuario, cedula_usuario) ");
+            sb.append("VALUES(?, ?, ?, ?, ?, ?)");
             
             Query insertUsuario = em.createNativeQuery(sb.toString());
             insertUsuario.setParameter(1, usuario.getNombre_usuario());
@@ -44,9 +44,8 @@ public class usuarioFacade {
             insertUsuario.setParameter(3, usuario.getEmail_usuario());
             insertUsuario.setParameter(4, usuario.getClave_usuario());
             insertUsuario.setParameter(5, usuario.getTelefono_usuario());
-            //insertUsuario.setParameter(5, usuario.getUuid_usuario());
-            insertUsuario.setParameter(6, usuario.getId_ciudad());
-            insertUsuario.setParameter(7, usuario.getCedula_usuario());
+            //insertUsuario.setParameter(6, usuario.getId_ciudad());
+            insertUsuario.setParameter(6, usuario.getCedula_usuario());
             
             int result = insertUsuario.executeUpdate();
             em.flush();
@@ -85,34 +84,10 @@ public class usuarioFacade {
     }
      
      
-    /*public Usuarios buscarUsuarioPorEmail(String emailUsuario) {
-        try {
-            String sql = "SELECT email_usuario, clave_usuario " +
-                         "FROM public.usuario WHERE email_usuario = ?1";
-
-            Query query = em.createNativeQuery(sql);
-            query.setParameter(1, emailUsuario);
-
-            Object[] result = (Object[]) query.getSingleResult();
-
-            Usuarios usuario = new Usuarios();
-            usuario.setEmail_usuario((String) result[0]);
-            usuario.setClave_usuario((String) result[1]);
-
-            return usuario;
-        } catch (NoResultException e) {
-            LOGGER.warn("No se encontró usuario con el email: {}", emailUsuario);
-            return null;
-        } catch (Exception ex) {
-            LOGGER.error("Error al buscar el usuario por email: {}", ex.getMessage());
-            throw new RuntimeException("Error al buscar el usuario por email.", ex);
-        }
-    }*/
-     
     public Usuario buscarUsuarioPorEmail(String emailUsuario) {
         try {
             String sql = "SELECT u.id_usuario, u.nombre_usuario, u.apellido_usuario, u.email_usuario, " +
-                         "u.telefono_usuario, u.clave_usuario, u.id_ciudad, u.cedula_usuario " +
+                         "u.telefono_usuario, u.clave_usuario, u.cedula_usuario " +
                          "FROM public.usuario u WHERE u.email_usuario = ?1";
 
             Query query = em.createNativeQuery(sql);
@@ -127,7 +102,7 @@ public class usuarioFacade {
             usuario.setEmailUsuario((String) result[3]);
             usuario.setTelefonoUsuario((String) result[4]);
             usuario.setClaveUsuario((String) result[5]);
-            usuario.setIdCiudad((Integer) result[6]);
+            //usuario.setIdCiudad((Integer) result[6]);
             usuario.setCedulaUsuario((String) result[7]);
 
             return usuario;

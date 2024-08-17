@@ -85,14 +85,14 @@ public class usuarioController {
             UUID uuidUsuario = UUID.randomUUID();
             String uuidUsuarioString = uuidUsuario.toString(); // Convertir UUID a String
 
-            int idCiudad = jsonObject.getInt("id_ciudad", 0);
-            Boolean existeCiudad = ciufacades.verifCiudadById(idCiudad);
+            //int idCiudad = jsonObject.getInt("id_ciudad", 0);
+            /*Boolean existeCiudad = ciufacades.verifCiudadById(idCiudad);
             if (!existeCiudad) { // Corregido aquí
                 JsonObject jsonResponse = Json.createObjectBuilder()
                     .add("error", "La ciudad ingresada no existe!")
                     .build();
                 return Response.status(Response.Status.CONFLICT).entity(jsonResponse).build();
-            }
+            }*/
             
             String cedulaUsuario = jsonObject.getString("cedula_usuario", "N/A");
             Boolean existeUsuario = usfacades.verifExistUsuario(cedulaUsuario);
@@ -109,7 +109,6 @@ public class usuarioController {
             System.out.println("Email: " + emailUsuario);
             System.out.println("Teléfono: " + telefonoUsuario);
             System.out.println("UUID: " + uuidUsuarioString);
-            System.out.println("ID Ciudad: " + idCiudad);
             System.out.println("Cédula: " + cedulaUsuario);
 
             // Crear el objeto Usuario y setear los valores
@@ -120,7 +119,7 @@ public class usuarioController {
             usuario.setClave_usuario(claveUsuario);
             usuario.setTelefono_usuario(telefonoUsuario);
             //usuario.setUuid_usuario(uuidUsuarioString); // Asignar el UUID convertido a String
-            usuario.setId_ciudad(idCiudad);
+            //usuario.setId_ciudad(idCiudad);
             usuario.setCedula_usuario(cedulaUsuario);
 
             // Llamar al Facade para registrar el usuario
