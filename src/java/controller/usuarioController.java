@@ -5,7 +5,6 @@
  */
 package controller;
 
-import static com.sun.corba.se.spi.presentation.rmi.StubAdapter.request;
 import entities.Usuario;
 import facades.ciudadFacade;
 import models.Usuarios;
@@ -157,7 +156,9 @@ public class usuarioController {
             String claveUsuario = jsonObject.getString("clave_usuario", "N/A");
 
             // Buscar el usuario en la base de datos por su email (solo obtiene email y clave)
-            Usuarios usuario = usfacades.buscarUsuarioPorEmail(emailUsuario);
+            //Usuarios usuario = usfacades.buscarUsuarioPorEmail(emailUsuario);
+            
+            Usuario usuario = usfacades.buscarUsuarioPorEmail(emailUsuario);
 
             if (usuario == null) {
                 // Si no existe el usuario, retornar un mensaje de error
@@ -172,7 +173,7 @@ public class usuarioController {
             String hashedPassword = hashPassword(claveUsuario, salt);
 
             // Comparar el hash de la contraseña ingresada con el hash almacenado
-            if (!hashedPassword.equals(usuario.getClave_usuario())) {
+            if (!hashedPassword.equals(usuario.getClaveUsuario())) {
                 // Si las contraseñas no coinciden, retornar un mensaje de error
                 JsonObject jsonResponse = Json.createObjectBuilder()
                     .add("error", "Credenciales inválidas.")

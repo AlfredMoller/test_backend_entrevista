@@ -85,7 +85,7 @@ public class usuarioFacade {
     }
      
      
-    public Usuarios buscarUsuarioPorEmail(String emailUsuario) {
+    /*public Usuarios buscarUsuarioPorEmail(String emailUsuario) {
         try {
             String sql = "SELECT email_usuario, clave_usuario " +
                          "FROM public.usuario WHERE email_usuario = ?1";
@@ -107,5 +107,37 @@ public class usuarioFacade {
             LOGGER.error("Error al buscar el usuario por email: {}", ex.getMessage());
             throw new RuntimeException("Error al buscar el usuario por email.", ex);
         }
+    }*/
+     
+    public Usuario buscarUsuarioPorEmail(String emailUsuario) {
+        try {
+            String sql = "SELECT u.id_usuario, u.nombre_usuario, u.apellido_usuario, u.email_usuario, " +
+                         "u.telefono_usuario, u.clave_usuario, u.id_ciudad, u.cedula_usuario " +
+                         "FROM public.usuario u WHERE u.email_usuario = ?1";
+
+            Query query = em.createNativeQuery(sql);
+            query.setParameter(1, emailUsuario);
+
+            Object[] result = (Object[]) query.getSingleResult();
+
+            Usuario usuario = new Usuario();
+            usuario.setIdUsuario((Integer) result[0]);
+            usuario.setNombreUsuario((String) result[1]);
+            usuario.setApellidoUsuario((String) result[2]);
+            usuario.setEmailUsuario((String) result[3]);
+            usuario.setTelefonoUsuario((String) result[4]);
+            usuario.setClaveUsuario((String) result[5]);
+            usuario.setIdCiudad((Integer) result[6]);
+            usuario.setCedulaUsuario((String) result[7]);
+
+            return usuario;
+        } catch (NoResultException e) {
+            LOGGER.warn("No se encontró usuario con el email: {}", emailUsuario);
+            return null;
+        } catch (Exception ex) {
+            LOGGER.error("Error al buscar el usuario por email: {}", ex.getMessage());
+            throw new RuntimeException("Error al buscar el usuario por email.", ex);
+        }
     }
+
 }
