@@ -85,7 +85,7 @@ Utiliza la siguiente estructura JSON:
 
 ##### Si no estás logueado
 Utiliza esta estructura JSON con nis_ocedula:
-```
+```json
 {
     "nis_ocedula": "123456789",
     "nombre_servicio": "Personal",
@@ -93,6 +93,15 @@ Utiliza esta estructura JSON con nis_ocedula:
     "size": 10
 }
 ```
+### 5.  Procesar Pago
+Para procesar el pago de una deuda, utiliza el campo id_deuda. Este endpoint solo está disponible para usuarios logueados.
+```json
+{
+    "id_deuda": 1
+}
+
+```
+
 
 
 ---
