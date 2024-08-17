@@ -1,6 +1,6 @@
 # Gestión de Pagos de Servicios
 
-Este repositorio contiene un conjunto de endpoints desarrollados con Java Server Faces (JSF), funcionando en un servidor Glassfish 4.1 o 5. El objetivo de este conjunto de endpoints es proporcionar una solución para la gestión de pagos de servicios. La base de datos se encuentra en el mismo proyecto en un archivo llamado "pagos_servicios_db"
+Este repositorio contiene un conjunto de endpoints desarrollados con Java Server Faces (JSF), funcionando en un servidor Glassfish 4.1 o 5. El objetivo de este conjunto de endpoints es proporcionar una solución para la gestión de pagos de servicios. La base de datos se encuentra en el mismo proyecto en un archivo llamado "pagos_servicios_db" con la propia colección del entorno de Postman
 
 ## Funcionalidades
 
